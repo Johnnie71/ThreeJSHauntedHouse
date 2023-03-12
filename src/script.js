@@ -148,21 +148,22 @@ const bushGeometry = new THREE.SphereGeometry(1, 16, 16);
 const bushMaterial = new THREE.MeshStandardMaterial({ color: "#89c854" });
 
 const bush1 = new THREE.Mesh(bushGeometry, bushMaterial);
-bush1.receiveShadow = true;
+bush1.castShadow = true;
 bush1.scale.set(0.5, 0.5, 0.5);
 bush1.position.set(0.8, 0.2, 2.2);
 
 const bush2 = new THREE.Mesh(bushGeometry, bushMaterial);
-bush2.receiveShadow = true;
+bush2.castShadow = true;
 bush2.scale.set(0.25, 0.25, 0.25);
 bush2.position.set(1.4, 0.1, 2.1);
 
 const bush3 = new THREE.Mesh(bushGeometry, bushMaterial);
-bush1.receiveShadow = true;
+bush1.castShadow = true;
 bush3.scale.set(0.4, 0.4, 0.4);
 bush3.position.set(-0.8, 0.1, 2.2);
 
 const bush4 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush4.castShadow = true;
 bush4.scale.set(0.15, 0.15, 0.15);
 bush4.position.set(-1, 0.05, 2.6);
 
@@ -205,11 +206,16 @@ gui.add(moonLight, "intensity").min(0).max(1).step(0.001);
 gui.add(moonLight.position, "x").min(-5).max(5).step(0.001);
 gui.add(moonLight.position, "y").min(-5).max(5).step(0.001);
 gui.add(moonLight.position, "z").min(-5).max(5).step(0.001);
+moonLight.castShadow = true;
+moonLight.shadow.mapSize.width = 256;
+moonLight.shadow.mapSize.height = 256;
+moonLight.shadow.camera.far = 15;
 scene.add(moonLight);
 
 // Door Light
 const doorLight = new THREE.PointLight("#ff7d46", 1, 7);
 doorLight.position.set(0, 2.2, 2.7);
+door.castShadow = true;
 house.add(doorLight);
 
 /**
@@ -217,14 +223,23 @@ house.add(doorLight);
  */
 const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
 ghost1.castShadow = true;
+ghost1.shadow.mapSize.width = 256;
+ghost1.shadow.mapSize.height = 256;
+ghost1.shadow.camera.far = 7;
 scene.add(ghost1);
 
 const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
 ghost2.castShadow = true;
+ghost2.shadow.mapSize.width = 256;
+ghost2.shadow.mapSize.height = 256;
+ghost2.shadow.camera.far = 7;
 scene.add(ghost2);
 
 const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
 ghost3.castShadow = true;
+ghost3.shadow.mapSize.width = 256;
+ghost3.shadow.mapSize.height = 256;
+ghost3.shadow.camera.far = 7;
 scene.add(ghost3);
 
 /**
@@ -275,6 +290,7 @@ const renderer = new THREE.WebGLRenderer({
 	canvas: canvas,
 });
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setClearColor("#262837");
