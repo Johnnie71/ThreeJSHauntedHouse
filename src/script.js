@@ -88,6 +88,7 @@ walls.geometry.setAttribute(
 	new THREE.Float32BufferAttribute(walls.geometry.attributes.uv.array, 2)
 );
 walls.position.y = 1.25;
+walls.receiveShadow = true;
 house.add(walls);
 
 // Roof
@@ -120,6 +121,7 @@ door.geometry.setAttribute(
 );
 door.position.z = 2 + 0.01;
 door.position.y = 1;
+door.receiveShadow = true;
 house.add(door);
 
 // Floor
@@ -138,6 +140,7 @@ floor.geometry.setAttribute(
 );
 floor.rotation.x = -Math.PI * 0.5;
 floor.position.y = 0;
+floor.receiveShadow = true;
 scene.add(floor);
 
 // Bushes
@@ -145,14 +148,17 @@ const bushGeometry = new THREE.SphereGeometry(1, 16, 16);
 const bushMaterial = new THREE.MeshStandardMaterial({ color: "#89c854" });
 
 const bush1 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush1.receiveShadow = true;
 bush1.scale.set(0.5, 0.5, 0.5);
 bush1.position.set(0.8, 0.2, 2.2);
 
 const bush2 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush2.receiveShadow = true;
 bush2.scale.set(0.25, 0.25, 0.25);
 bush2.position.set(1.4, 0.1, 2.1);
 
 const bush3 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush1.receiveShadow = true;
 bush3.scale.set(0.4, 0.4, 0.4);
 bush3.position.set(-0.8, 0.1, 2.2);
 
@@ -164,6 +170,8 @@ house.add(bush1, bush2, bush3, bush4);
 
 // Graves
 const graves = new THREE.Group();
+graves.receiveShadow = true;
+graves.castShadow = true;
 scene.add(graves);
 
 const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2);
@@ -179,6 +187,7 @@ for (let i = 0; i <= 50; i++) {
 	grave.position.set(x, 0.3, z);
 	grave.rotation.y = (Math.random() - 0.5) * 0.4;
 	grave.rotation.z = (Math.random() - 0.5) * 0.4;
+	grave.castShadow = true;
 	graves.add(grave);
 }
 /**
@@ -202,6 +211,21 @@ scene.add(moonLight);
 const doorLight = new THREE.PointLight("#ff7d46", 1, 7);
 doorLight.position.set(0, 2.2, 2.7);
 house.add(doorLight);
+
+/**
+ * Ghosts
+ */
+const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
+ghost1.castShadow = true;
+scene.add(ghost1);
+
+const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
+ghost2.castShadow = true;
+scene.add(ghost2);
+
+const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
+ghost3.castShadow = true;
+scene.add(ghost3);
 
 /**
  * Sizes
@@ -250,6 +274,7 @@ controls.enableDamping = true;
 const renderer = new THREE.WebGLRenderer({
 	canvas: canvas,
 });
+renderer.shadowMap.enabled = true;
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setClearColor("#262837");
@@ -261,6 +286,23 @@ const clock = new THREE.Clock();
 
 const tick = () => {
 	const elapsedTime = clock.getElapsedTime();
+
+	// Ghosts
+	const ghost1Angle = elapsedTime * 0.5;
+	ghost1.position.x = Math.cos(ghost1Angle) * 4;
+	ghost1.position.z = Math.sin(ghost1Angle) * 4;
+	ghost1.position.y = Math.sin(elapsedTime * 3);
+
+	const ghost2Angle = -elapsedTime * 0.32;
+	ghost2.position.x = Math.cos(ghost2Angle) * 5;
+	ghost2.position.z = Math.sin(ghost2Angle) * 5;
+	ghost2.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5);
+
+	const ghost3Angle = -elapsedTime * 0.18;
+	ghost3.position.x =
+		Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.32));
+	ghost3.position.z = Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5));
+	ghost3.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5);
 
 	// Update controls
 	controls.update();
